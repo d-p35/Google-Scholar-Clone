@@ -1,80 +1,84 @@
-import React, { Key } from 'react';
+import React from 'react';
 import { Container, TextInput, Paper, Card, Text } from '@mantine/core';
+import { Key } from 'readline';
+import {useEffect } from 'react';
+import { get } from 'http';
 
-export function MyPage (){
-
-
+export const MyPage = () => {
   const [searchValue, setSearchValue] = React.useState('');
   const [data, setData] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 10; // Number of items to display per page
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    getArticle();
+}
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
+  async function getArticle() {
+    const response = await fetch(`https://api.openalex.org/works?search=${searchValue}`);
+    const result = await response.json();
+    console.log(result);
+    setData(result.results);
+};
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    const searchData = [
-      { id: 1, title: 'Article 1', author: 'Author 1', abstract: 'Abstract 1' },
-      { id: 2, title: 'Article 2', author: 'Author 2', abstract: 'Abstract 2' },
-      { id: 3, title: 'Article 3', author: 'Author 3', abstract: 'Abstract 3' },
-      { id: 4, title: 'Article 1', author: 'Author 1', abstract: 'Abstract 1' },
-      { id: 5, title: 'Article 2', author: 'Author 2', abstract: 'Abstract 2' },
-      { id: 6, title: 'Article 3', author: 'Author 3', abstract: 'Abstract 3' }
-    ];
-    setData(searchData);
-  };
+  useEffect(() => {
 
-  type i = {
+    getArticle();
+    }, []);
+
+  
+  type i ={
     id: Key,
-    title: String,
-    author: String,
-    abstract : String,
+    title: string,
+    author: string,
+    abstract: string
   }
-
   return (
-    <Container size="md" style={{ marginTop: '2rem' }}>
+    <Container size="lg" style={{  marginTop: '6rem' }}>
         <form onSubmit={handleSearchSubmit}>
           <TextInput
             placeholder="Search"
             value={searchValue}
             onChange={handleSearchChange}
-            style={{ marginBottom: '1rem' }}
+            style={{ marginBottom: '3rem' }}
             fullWidth
           />
         </form>
-        {data.length > 0 ? (
-          data.map((item: i) => (
-            <Card padding="lg" key={item.id} shadow="xs" style={{ marginBottom: '1rem' }}>
-              <Text size="lg" weight={600}>
-                {item.title}
-              </Text>
-              <Text size="sm" style={{ marginBottom: '0.5rem' }}>
-                {item.author}
-              </Text>
-              <Text size="sm" color="gray">
-                {item.abstract}
-              </Text>
-            </Card>
-          ))
-        ) : (
-          <Text>No results found</Text>
-        )}
-
-    {totalPages > 1 && (
+        <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
+          {currentItems.length > 0 ? (
+            currentItems.map((item: i) => (
+              <Card key={item.id} shadow="xs" style={{ marginBottom: '2rem' }} >
+                <Text size="lg" weight={600}>
+                  {item.title}
+                </Text>
+                <Text size="sm" style={{ marginBottom: '0.5rem' }}>
+                  {/* {item.author} */}
+                </Text>
+                <Text size="sm" color="gray">
+                  {/* {item.abstract} */}
+                </Text>
+              </Card>
+            ))
+          ) : (
+            <Text>No results found</Text>
+          )}
+        </div>
+        {totalPages > 1 && (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
             {Array.from({ length: totalPages }, (_, i) => (
               <button
@@ -92,11 +96,10 @@ export function MyPage (){
               >
                 {i + 1}
               </button>
-              
             ))}
-            </div>
+          </div>
         )}
     </Container>
   );
-}
+};
 
