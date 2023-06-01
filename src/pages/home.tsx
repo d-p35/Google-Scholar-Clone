@@ -36,7 +36,7 @@ import {
     },
   }));
 
-  export function Home() {
+  export default function Home() {
     const { classes } = useStyles();
     const articleName = useRef<HTMLInputElement>(null);
     const handleButtonClick = () => {
