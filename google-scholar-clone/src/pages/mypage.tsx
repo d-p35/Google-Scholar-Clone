@@ -164,7 +164,7 @@ export const MyPage = () => {
   useEffect(() => {
 
     getArticle();
-    }, []);
+    }, [getArticle]);
 
  
   
@@ -201,6 +201,7 @@ export const MyPage = () => {
                 checked={filterOptions[author] || false}
                 onChange={handleFilterChange}
                 name={author}
+                key={author}
               />
               ))) : (
                   <Text>No results found</Text>
