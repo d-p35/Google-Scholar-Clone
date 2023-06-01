@@ -5,38 +5,38 @@ import {useEffect } from 'react';
 import { get } from 'http';
 import { createStyles, RangeSlider, rem } from '@mantine/core';
 
-export const MyPage = () => {
-  const [searchValue, setSearchValue] = React.useState('');
-  const [data, setData] = React.useState([]);
-  const [currentPage, setCurrentPage] = React.useState(1);
+ export default function MyPage () {
+  const [searchValue, setSearchValue] = React.useState<any>('');
+  const [data, setData] = React.useState<any>([]);
+  const [currentPage, setCurrentPage] = React.useState<any>(1);
   const itemsPerPage = 10; // Number of items to display per page
   const [authors, setAuthors] = React.useState<string[]>([]);
-  const [years, setYears] = React.useState([]);
+  const [years, setYears] = React.useState<number[]>([]);
 
-  const [filterOptions, setFilterOptions] = React.useState({["num"] : 0});
+  const [filterOptions, setFilterOptions] = React.useState<any>({["num"] : 0});
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: any) => {
     setSearchValue(event.target.value);
   };
 
-  const handleSearchSubmit = (event) => {
+  const handleSearchSubmit = (event: any) => {
     event.preventDefault();
     getArticle();
 }
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (pageNumber: any) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleYearChange = (event) => {
-    setFilterOptions((prevOptions) => ({
+  const handleYearChange = (event: any) => {
+    setFilterOptions((prevOptions: any) => ({
       ...prevOptions,
       ["lowestYear"]: event[0],
       ["highestYear"]: event[1],
     }));
   };
 
-  const handleFilterChange = (event) => {
+  const handleFilterChange = (event: any) => {
     const { name, checked } = event.target;
     // if (filterOptions["num"] === 0){
     //   for (let i = 0; i < authors.length; i++) {
@@ -46,18 +46,18 @@ export const MyPage = () => {
     //     }));
     //   }
     // }
-    setFilterOptions((prevOptions) => ({
+    setFilterOptions((prevOptions: any) => ({
       ...prevOptions,
       [name]: checked,
     }));
     if (checked){
-      setFilterOptions((prevOptions) => ({
+      setFilterOptions((prevOptions: any) => ({
         ...prevOptions,
         ["num"]: prevOptions["num"] + 1,
       }));
     }
     else{
-      setFilterOptions((prevOptions) => ({
+      setFilterOptions((prevOptions: any) => ({
         ...prevOptions,
         ["num"]: prevOptions["num"] - 1,
       }));
@@ -164,7 +164,7 @@ export const MyPage = () => {
   useEffect(() => {
 
     getArticle();
-    }, [getArticle]);
+    }, []);
 
  
   
@@ -185,7 +185,7 @@ export const MyPage = () => {
       <Grid  gutter={8} gutterXs="md" gutterMd="xl" gutterXl={50}>
       <Grid.Col span={3}>
          <div>
-          <Paper padding="lg" shadow="xs" >
+          <Paper shadow="xs" >
             <Text ta="center" fw={500} td="underline" size="med" weight={600} style={{ marginBottom: '0.5rem' }}>
               Filter
             </Text>
@@ -195,7 +195,7 @@ export const MyPage = () => {
             <Group position="center" spacing="sm">
             <div style={{ maxHeight: '400px', overflowY: "scroll", margin: '0.5rem auto' }}>
               {authors.length > 0 ? (
-              authors.map((author : string, i) => (
+              authors.map((author : any, i) => (
                 <Checkbox
                 label={author}
                 checked={filterOptions[author] || false}
@@ -223,13 +223,12 @@ export const MyPage = () => {
             value={searchValue}
             onChange={handleSearchChange}
             style={{ marginBottom: '3rem' }}
-            fullWidth
           />
         </form>
         <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
           {currentItems.length > 0 ? 
           (
-            currentItems.filter((item) => {
+            currentItems.filter((item: any) => {
               if (filterOptions["num"] === 0){
                 return true;
               }
@@ -238,13 +237,13 @@ export const MyPage = () => {
                   return true;
                 }
               }
-            }).filter((item) => {
+            }).filter((item: any) => {
               if (item.publication_year >= filterOptions["lowestYear"] && item.publication_year <= filterOptions["highestYear"]){
                 return true;
               }
             })
-            .map((item: i) => (
-              <Card key={item.id} shadow="xs" style={{ marginBottom: '2rem' }} >
+            .map((item: i, i: any) => (
+              <Card key={i} shadow="xs" style={{ marginBottom: '2rem' }} >
                 <Text size="lg" weight={600}>
                   {item.title}
                 </Text>
@@ -290,5 +289,5 @@ export const MyPage = () => {
         </Grid>
     </Container>
   );
-};
+}
 
